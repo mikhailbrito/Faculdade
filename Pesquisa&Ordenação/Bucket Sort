@@ -1,0 +1,187 @@
+import timeit
+import matplotlib.pyplot as plt
+import numpy as np
+from numpy.random import randint
+import sys
+
+# Aumenta o limite de recursão do Python
+sys.setrecursionlimit(200000)
+
+# --- Implementações dos Algoritmos de Ordenação ---
+
+# Insertion Sort (usado para ordenar os baldes)
+def insertionSort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+
+# Counting Sort (O(n + k))
+def CountingSort(array):
+    if not array:
+        return []
+    maxValue = max(array) + 1
+    count = [0] * maxValue
+    for num in array:
+        count[num] += 1
+    k = 0
+    for i in range(maxValue):
+        for _ in range(count[i]):
+            array[k] = i
+            k += 1
+    return array
+
+# Quicksort (O(n log n) em caso médio)
+def partition(arr, low, high):
+    i = (low - 1)
+    pivot = arr[high]
+    for j in range(low, high):
+        if arr[j] <= pivot:
+            i = i + 1
+            arr[i], arr[j] = arr[j], arr[i]
+    arr[i + 1], arr[high] = arr[high], arr[i + 1]
+    return (i + 1)
+
+def quick_sort_recursive(arr, low, high):
+    if low < high:
+        pi = partition(arr, low, high)
+        quick_sort_recursive(arr, low, pi - 1)
+        quick_sort_recursive(arr, pi + 1, high)
+
+def QuickSort(arr):
+    quick_sort_recursive(arr, 0, len(arr) - 1)
+    return arr
+
+# Mergesort (O(n log n) em todos os casos)
+def mergeSort(arr):
+    if len(arr) > 1:
+        mid = len(arr) // 2
+        L = arr[:mid]
+        R = arr[mid:]
+        
+        mergeSort(L)
+        mergeSort(R)
+        
+        i = j = k = 0
+        
+        while i < len(L) and j < len(R):
+            if L[i] < R[j]:
+                arr[k] = L[i]
+                i += 1
+            else:
+                arr[k] = R[j]
+                j += 1
+            k += 1
+            
+        while i < len(L):
+            arr[k] = L[i]
+            i += 1
+            k += 1
+        
+        while j < len(R):
+            arr[k] = R[j]
+            j += 1
+            k += 1
+
+# Bucket Sort (O(n + k))
+def bucketSort(arr):
+    if not arr:
+        return []
+
+    # Encontra o maior valor na lista para determinar o número de baldes
+    max_val = max(arr)
+    bucket_size = max_val // len(arr) + 1
+    
+    buckets = [[] for _ in range(bucket_size)]
+
+    # Coloca os elementos nos baldes apropriados
+    for num in arr:
+        index = num // (max_val // len(arr) + 1)
+        buckets[index].append(num)
+
+    # Ordena cada balde e concatena os resultados
+    sorted_arr = []
+    for bucket in buckets:
+        # Usa Insertion Sort para ordenar os baldes
+        insertionSort(bucket)
+        sorted_arr.extend(bucket)
+
+    return sorted_arr
+
+# --- Lógica de Medição e Plotagem ---
+
+def desenhaGraficoComparativo(x, y_list, labels, fileName):
+    fig = plt.figure(figsize=(12, 8))
+    ax = fig.add_subplot(111)
+
+    for i in range(len(y_list)):
+        ax.plot(x, y_list[i], label=labels[i])
+    
+    plt.title("Comparativo de Algoritmos de Ordenação (Casos Aleatórios)")
+    plt.xlabel("Tamanho da Lista")
+    plt.ylabel("Tempo (segundos)")
+    ax.legend()
+    plt.grid(True)
+    plt.savefig(fileName)
+    plt.show()
+
+if __name__ == "__main__":
+    tamanhos = list(range(10000, 100001, 10000))
+    
+    tempos_quicksort = []
+    tempos_mergesort = []
+    tempos_countingsort = []
+    tempos_bucketsort = []
+
+    print("Iniciando medições de tempo para listas aleatórias...")
+    print("Isso pode levar alguns minutos...")
+
+    for tam in tamanhos:
+        print(f"Processando listas de tamanho {tam}...")
+        
+        # Gera a lista aleatória para todos os testes.
+        # A faixa de valores (0 a 20000) é crucial para os algoritmos de contagem e baldes.
+        lista_aleatoria = list(randint(0, 20000, tam))
+        
+        # Quicksort
+        tempo_qs = timeit.timeit(lambda: QuickSort(lista_aleatoria.copy()), number=1)
+        tempos_quicksort.append(tempo_qs)
+        
+        # Mergesort
+        tempo_ms = timeit.timeit(lambda: mergeSort(lista_aleatoria.copy()), number=1)
+        tempos_mergesort.append(tempo_ms)
+
+        # Counting Sort
+        tempo_cs = timeit.timeit(lambda: CountingSort(lista_aleatoria.copy()), number=1)
+        tempos_countingsort.append(tempo_cs)
+
+        # Bucket Sort
+        tempo_bs = timeit.timeit(lambda: bucketSort(lista_aleatoria.copy()), number=1)
+        tempos_bucketsort.append(tempo_bs)
+    
+    # Prepara os dados e rótulos para o gráfico
+    tempos_comparativos = [
+        tempos_quicksort,
+        tempos_mergesort,
+        tempos_countingsort,
+        tempos_bucketsort
+    ]
+    labels_comparativos = [
+        'Quicksort (O(n log n))',
+        'Mergesort (O(n log n))',
+        'Counting Sort (O(n+k))',
+        'Bucket Sort (O(n+k))'
+    ]
+    
+    # Desenha o gráfico
+    desenhaGraficoComparativo(
+        tamanhos, 
+        tempos_comparativos, 
+        labels_comparativos, 
+        'Comparativo_Algoritmos_nlogne_linear.png'
+    )
+    
+    print("\nProcesso finalizado. O gráfico comparativo foi gerado.")
