@@ -1,0 +1,53 @@
+import random
+import time
+import matplotlib.pyplot as plt
+
+def binary_search(arr, target):
+    left = 0
+    right = len(arr) - 1
+    count = 0
+
+    while left <= right:
+        mid = (left + right) // 2
+        count += 1
+        
+        if arr[mid] == target:
+            return count
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    return -1
+
+def evaluate_search_performance(list_sizes):
+    avg_operations = []
+    
+    for size in list_sizes:
+        arr = sorted(random.sample(range(size * 10), size))
+        targets = random.sample(arr, 4)
+        total_operations = 0
+        
+        for target in targets:
+            start_time = time.time()
+            count = binary_search(arr, target)
+            end_time = time.time()
+            
+            if count != -1:
+                total_operations += count
+            else:
+                print(f"Target {target} not found in list of size {size}.")
+        
+        avg_operations.append(total_operations / len(targets))
+    
+    return avg_operations
+
+list_sizes = range(10000, 100001, 10000)
+avg_operations = evaluate_search_performance(list_sizes)
+
+plt.plot(list_sizes, avg_operations, marker='o')
+plt.xlabel('Tamanho da Lista')
+plt.ylabel('Número Médio de Operações')
+plt.title('Variação do Número de Operações na Busca Binária')
+plt.grid(True)
+plt.show()
