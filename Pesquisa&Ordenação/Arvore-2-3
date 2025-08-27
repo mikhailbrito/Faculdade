@@ -1,0 +1,113 @@
+class Node:
+    def __init__(self, key1, key2=None):
+        self.key1 = key1
+        self.key2 = key2
+        self.child1 = None
+        self.child2 = None
+        self.child3 = None
+
+
+def insert(root, key):
+    if root is None:
+        return Node(key)
+
+    if root.key2 is None:
+        if key < root.key1:
+            root.key2 = root.key1
+            root.key1 = key
+        else:
+            root.key2 = key
+    else:
+        if key < root.key1:
+            root.child1 = insert(root.child1, key)
+        elif key > root.key2:
+            root.child3 = insert(root.child3, key)
+        else:
+            root.child2 = insert(root.child2, key)
+
+    return root
+
+
+def delete(root, key):
+    if root is None:
+        return root
+
+    if key < root.key1:
+        root.child1 = delete(root.child1, key)
+    elif key > root.key2 or (root.key2 is None and key == root.key1):
+        root.child3 = delete(root.child3, key)
+    else:
+        if root.key2 is None or key == root.key1:
+            root.key1 = root.key2
+            root.child2 = root.child3
+            root.key2 = None
+            root.child3 = None
+
+        root.child2 = delete(root.child2, key)
+
+    return root
+
+
+def search(root, key):
+    if root is None:
+        return False
+
+    if key == root.key1 or (root.key2 is not None and key == root.key2):
+        return True
+
+    if key < root.key1:
+        return search(root.child1, key)
+    elif root.key2 is None or key < root.key2:
+        return search(root.child2, key)
+    else:
+        return search(root.child3, key)
+
+
+def print_tree(root):
+    if root:
+        print_tree(root.child1)
+        if root.key2 is not None:
+            print(root.key1, root.key2)
+        else:
+            print(root.key1)
+        print_tree(root.child2)
+        print_tree(root.child3)
+
+
+
+
+tree_root = None
+
+
+tree_root = insert(tree_root, 10)
+tree_root = insert(tree_root, 20)
+tree_root = insert(tree_root, 30)
+tree_root = insert(tree_root, 40)
+tree_root = insert(tree_root, 50)
+tree_root = insert(tree_root, 25)
+
+
+print("Árvore após a inserção:")
+print_tree(tree_root)
+
+
+key_to_search = 30
+if search(tree_root, key_to_search):
+    print(f"A chave {key_to_search} está presente na árvore.")
+else:
+    print(f"A chave {key_to_search} não está presente na árvore.")
+
+
+key_to_search = 15
+if search(tree_root, key_to_search):
+    print(f"A chave {key_to_search} está presente na árvore.")
+else:
+    print(f"A chave {key_to_search} não está presente na árvore.")
+
+
+key_to_delete = 20
+tree_root = delete(tree_root, key_to_delete)
+
+
+print("Árvore após a deleção:")
+print_tree(tree_root)
