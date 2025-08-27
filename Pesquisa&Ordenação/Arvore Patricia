@@ -1,0 +1,64 @@
+import requests
+import random
+from pygtrie import Trie
+
+# Define a URL do léxico e baixa o conteúdo
+url = 'https://www.lexicodoportugues.com/downloads/lexporbr_alfa_txt.txt'
+try:
+    response = requests.get(url)
+    response.raise_for_status() # Lança um erro se a requisição falhar
+    lexico_text = response.text
+except requests.exceptions.RequestException as e:
+    print(f"Erro ao baixar o arquivo: {e}")
+    exit()
+
+# Divide o texto em uma lista de palavras e remove linhas vazias
+words = [word for word in lexico_text.split('\n') if word]
+total_words_in_lexico = len(words)
+
+# Verifica se o léxico tem palavras suficientes
+if total_words_in_lexico < 1000:
+    print("O léxico não possui palavras suficientes para a amostra de 1000.")
+    exit()
+
+# Seleciona 1000 palavras aleatoriamente
+random_words = random.sample(words, 1000)
+
+# 1. Calcula o total de caracteres
+total_characters = sum(len(word) for word in random_words)
+
+# --- Construção das árvores ---
+# A estrutura de uma Trie é independente da ordem de inserção.
+# O experimento demonstra essa característica.
+
+# Árvore 1
+trie1 = Trie()
+for word in random_words:
+    trie1[word] = True
+
+# Embaralha as palavras para simular uma ordem diferente
+random.shuffle(random_words)
+
+# Árvore 2
+trie2 = Trie()
+for word in random_words:
+    trie2[word] = True
+
+# Embaralha as palavras novamente
+random.shuffle(random_words)
+
+# Árvore 3
+trie3 = Trie()
+for word in random_words:
+    trie3[word] = True
+
+# Conta o número de nós (a biblioteca já tem essa funcionalidade)
+nodes_trie1 = len(trie1)
+nodes_trie2 = len(trie2)
+nodes_trie3 = len(trie3)
+
+# --- Saídas ---
+print(f"Total de caracteres do conjunto de palavras selecionado: {total_characters}")
+print(f"Total de nós da árvore Trie 1: {nodes_trie1}")
+print(f"Total de nós da árvore Trie 2: {nodes_trie2}")
+print(f"Total de nós da árvore Trie 3: {nodes_trie3}")
