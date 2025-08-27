@@ -1,0 +1,76 @@
+import timeit
+import matplotlib.pyplot as plt
+import numpy as np
+from numpy.random import randint
+import matplotlib as mpl
+
+# Define o backend para plotagem, garantindo compatibilidade.
+mpl.use('Agg')
+
+def insertionSort(arr):
+    """
+    Implementação do algoritmo de ordenação Insertion Sort.
+    """
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        # Move os elementos maiores que a chave uma posição para a frente.
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+
+def desenhaGrafico(x, y, graphLabel, fileName, xl="Quantidade de elementos", yl="Tempo (s)"):
+    """
+    Função para plotar o gráfico dos tempos de execução.
+    """
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111)
+    
+    for i in range(len(y)):
+        ax.plot(x, y[i], label=graphLabel[i])
+    
+    ax.legend(bbox_to_anchor=(1, 1), bbox_transform=plt.gcf().transFigure)
+    plt.ylabel(yl)
+    plt.xlabel(xl)
+    plt.title("Insertion Sort: Tempo de Execução vs. Tamanho da Lista")
+    plt.grid(True)
+    fig.savefig(fileName)
+    plt.show()
+
+# --- Lógica Principal ---
+if __name__ == "__main__":
+    tamanhos = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+    
+    tempos_melhor_caso = []
+    tempos_medio_caso = []
+    tempos_pior_caso = []
+
+    for tam in tamanhos:
+        print(f"Processando lista de tamanho {tam}...")
+        
+        # Gera uma lista aleatória para o caso médio
+        lista_aleatoria = list(randint(0, tam * 10, tam))
+        
+        # Melhor Caso: lista já ordenada
+        lista_melhor_caso = sorted(lista_aleatoria)
+        tempo = timeit.timeit(lambda: insertionSort(lista_melhor_caso.copy()), number=1)
+        tempos_melhor_caso.append(tempo)
+        
+        # Pior Caso: lista em ordem decrescente
+        lista_pior_caso = sorted(lista_aleatoria, reverse=True)
+        tempo = timeit.timeit(lambda: insertionSort(lista_pior_caso.copy()), number=1)
+        tempos_pior_caso.append(tempo)
+        
+        # Caso Aleatório (Médio)
+        tempo = timeit.timeit(lambda: insertionSort(lista_aleatoria.copy()), number=1)
+        tempos_medio_caso.append(tempo)
+
+    # Prepara os dados para o gráfico
+    casos = [tempos_pior_caso, tempos_medio_caso, tempos_melhor_caso]
+    casos_labels = ['Pior Caso', 'Caso Médio', 'Melhor Caso']
+    
+    # Desenha e salva o gráfico
+    desenhaGrafico(tamanhos, casos, casos_labels, 'InsertionSort_Casos.png')
+    
+    print("\nProcesso finalizado. O gráfico foi gerado.")
