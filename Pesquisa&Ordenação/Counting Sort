@@ -1,0 +1,85 @@
+import random
+import timeit
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+from numpy.random import randint
+
+# Define o backend para plotagem.
+mpl.use('Agg')
+
+# Função para desenhar o gráfico
+def desenhaGrafico(x, y, graphLabel, fileName, xl="Quantidade de elementos", yl="Tempo (s)"):
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111)
+    
+    for i in range(len(y)):
+        ax.plot(x, y[i], label=graphLabel[i])
+    
+    ax.legend(bbox_to_anchor=(1, 1), bbox_transform=plt.gcf().transFigure)
+    plt.ylabel(yl)
+    plt.xlabel(xl)
+    plt.title("Counting Sort: Tempo de Execução vs. Tamanho da Lista")
+    plt.grid(True)
+    fig.savefig(fileName)
+    plt.show()
+
+# Implementação do algoritmo Counting Sort
+def CountingSort(array):
+    n = len(array)
+    # Encontra o maior valor para definir o tamanho do array de contagem
+    if not array:
+        return []
+    maxValue = max(array) + 1
+    count = [0] * maxValue
+    
+    # 1. Armazena a contagem de cada elemento
+    for num in array:
+        count[num] += 1
+    
+    # 2. Reconstrói o array original em ordem
+    k = 0
+    for i in range(maxValue):
+        for _ in range(count[i]):
+            array[k] = i
+            k += 1
+    return array
+
+# --- Lógica Principal ---
+if __name__ == "__main__":
+    tamanhos = [10000, 20000, 30000, 40000, 50000]
+    
+    tempos_melhor_caso = []
+    tempos_medio_caso = []
+    tempos_pior_caso = []
+
+    for tam in tamanhos:
+        print(f"Processando lista de tamanho {tam}...")
+        
+        # Gera uma lista aleatória para todos os casos
+        # A faixa de valores (0 a 20000) é crucial para o Counting Sort
+        lista_base = list(randint(0, 20000, tam))
+        
+        # Melhor Caso: lista já ordenada
+        lista_melhor_caso = sorted(lista_base)
+        tempo = timeit.timeit(lambda: CountingSort(lista_melhor_caso.copy()), number=1)
+        tempos_melhor_caso.append(tempo)
+        
+        # Pior Caso: lista em ordem decrescente
+        lista_pior_caso = sorted(lista_base, reverse=True)
+        tempo = timeit.timeit(lambda: CountingSort(lista_pior_caso.copy()), number=1)
+        tempos_pior_caso.append(tempo)
+        
+        # Caso Aleatório (Médio)
+        lista_medio_caso = lista_base.copy()
+        tempo = timeit.timeit(lambda: CountingSort(lista_medio_caso), number=1)
+        tempos_medio_caso.append(tempo)
+
+    # Prepara os dados para o gráfico
+    casos = [tempos_melhor_caso, tempos_medio_caso, tempos_pior_caso]
+    casos_labels = ['Melhor Caso (Ordenado)', 'Caso Médio (Aleatório)', 'Pior Caso (Invertido)']
+    
+    # Desenha e salva o gráfico
+    desenhaGrafico(tamanhos, casos, casos_labels, 'CountingSort_Casos.png')
+    
+    print("\nProcesso finalizado. O gráfico foi gerado.")
