@@ -1,0 +1,141 @@
+import random
+import requests
+import sys
+
+# Define a URL do léxico e baixa o conteúdo
+url = 'https://www.lexicodoportugues.com/downloads/lexporbr_alfa_txt.txt'
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+}
+try:
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    word_list = response.text.split('\n')
+except requests.exceptions.RequestException as e:
+    print(f"Erro ao baixar o arquivo: {e}")
+    sys.exit()
+
+# Seleciona 1000 palavras aleatórias
+# Remove linhas vazias e garante que o conjunto seja válido
+words = [word for word in word_list if word]
+if len(words) < 1000:
+    print("O arquivo não contém 1000 palavras suficientes.")
+    sys.exit()
+
+random_words = random.sample(words, 1000)
+
+# --- Implementação da Tabela Hash com Endereçamento Aberto ---
+class HashTableOpenAddressing:
+    def __init__(self, size):
+        self.size = size
+        self.table = [None] * size
+        self.count = 0
+
+    def _hash_function(self, key):
+        return hash(key) % self.size
+
+    def insert(self, key):
+        if self.count >= self.size:
+            print("Tabela cheia, não é possível inserir.")
+            return
+
+        index = self._hash_function(key)
+        # Sonda linear para encontrar um slot vazio
+        while self.table[index] is not None:
+            index = (index + 1) % self.size
+
+        self.table[index] = key
+        self.count += 1
+        print(f"Inserido '{key}' na posição {index}")
+
+    def search(self, key):
+        index = self._hash_function(key)
+
+        # Sonda linear para encontrar a chave
+        initial_index = index
+        while self.table[index] is not None:
+            if self.table[index] == key:
+                return f"'{key}' encontrado na posição {index}"
+            index = (index + 1) % self.size
+            if index == initial_index: # Evita loop infinito
+                break
+        return f"'{key}' não encontrado"
+
+    def delete(self, key):
+        index = self._hash_function(key)
+
+        # Sonda linear para encontrar e deletar a chave
+        initial_index = index
+        while self.table[index] is not None:
+            if self.table[index] == key:
+                self.table[index] = "DELETED" # Usa um marcador para evitar quebra na busca
+                self.count -= 1
+                return f"'{key}' deletado da posição {index}"
+            index = (index + 1) % self.size
+            if index == initial_index:
+                break
+        return f"'{key}' não encontrado para deletar"
+
+# --- Implementação da Tabela Hash com Encadeamento Separado ---
+class HashTableSeparateChaining:
+    def __init__(self, size):
+        self.size = size
+        self.table = [[] for _ in range(size)]
+
+    def _hash_function(self, key):
+        return hash(key) % self.size
+
+    def insert(self, key):
+        index = self._hash_function(key)
+        # Adiciona a chave no final da lista no índice
+        self.table[index].append(key)
+        print(f"Inserido '{key}' na lista do índice {index}")
+
+    def search(self, key):
+        index = self._hash_function(key)
+        if key in self.table[index]:
+            return f"'{key}' encontrado no índice {index}"
+        return f"'{key}' não encontrado"
+
+    def delete(self, key):
+        index = self._hash_function(key)
+        if key in self.table[index]:
+            self.table[index].remove(key)
+            return f"'{key}' deletado do índice {index}"
+        return f"'{key}' não encontrado para deletar"
+
+# --- Teste das Tabelas Hash ---
+if __name__ == "__main__":
+    # O tamanho da tabela deve ser maior que o número de itens para o Endereçamento Aberto
+    # para evitar que a tabela encha rapidamente.
+    table_size = 1500
+
+    print("--- Testando Endereçamento Aberto ---")
+    open_addressing_table = HashTableOpenAddressing(table_size)
+    for word in random_words:
+        open_addressing_table.insert(word)
+
+    # Testa a busca
+    test_word = random.choice(random_words)
+    print("\n" + open_addressing_table.search(test_word))
+
+    # Testa a deleção
+    delete_word = random.choice(random_words)
+    print(open_addressing_table.delete(delete_word))
+    print(open_addressing_table.search(delete_word)) # Testa se a palavra foi realmente deletada
+
+    print("\n" + "="*40 + "\n")
+
+    print("--- Testando Encadeamento Separado ---")
+    separate_chaining_table = HashTableSeparateChaining(table_size)
+    for word in random_words:
+        separate_chaining_table.insert(word)
+
+    # Testa a busca
+    test_word = random.choice(random_words)
+    print("\n" + separate_chaining_table.search(test_word))
+
+    # Testa a deleção
+    delete_word = random.choice(random_words)
+    print(separate_chaining_table.delete(delete_word))
+    print(separate_chaining_table.search(delete_word)) # Testa se a palavra foi realmente deletada
