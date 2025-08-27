@@ -1,0 +1,50 @@
+import time
+import matplotlib.pyplot as plt
+from numpy import random
+
+# Função Bubble Sort
+def bubbleSort(arr):
+    n = len(arr)
+    # Loop principal para percorrer a lista
+    for i in range(n - 1):
+        swapped = False # Flag para otimização
+        # Loop para fazer as comparações e trocas
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                # Troca os elementos
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                swapped = True
+        
+        # Se nenhuma troca ocorreu em um ciclo, a lista já está ordenada.
+        if not swapped:
+            break
+    return arr
+
+# --- Lógica principal ---
+if __name__ == "__main__":
+    tamanhos_lista = range(1000, 10001, 1000)
+    tempos_decorridos = []
+    
+    print("Iniciando medições de tempo...")
+    
+    for tamanho in tamanhos_lista:
+        # Gera uma nova lista aleatória para cada tamanho
+        lista_aleatoria = random.randint(1, 10000, size=(tamanho))
+
+        # Mede o tempo de ordenamento
+        inicio = time.process_time()
+        bubbleSort(lista_aleatoria)
+        fim = time.process_time()
+        
+        tempo_decorrido = fim - inicio
+        tempos_decorridos.append(tempo_decorrido)
+        
+        print(f"Lista de {tamanho} elementos ordenada em {tempo_decorrido:.6f} segundos.")
+
+    # --- Plotagem do gráfico ---
+    plt.plot(tamanhos_lista, tempos_decorridos)
+    plt.title("Bubble Sort: Tamanho vs. Tempo de Ordenamento")
+    plt.xlabel("Tamanho da Lista")
+    plt.ylabel("Tempo (segundos)")
+    plt.grid(True)
+    plt.show()
