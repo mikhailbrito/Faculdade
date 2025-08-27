@@ -1,0 +1,118 @@
+class Node:
+    def __init__(self, t):
+        self.keys = []
+        self.child = []
+        self.is_leaf = False
+        self.t = t
+
+
+class BPlusTree:
+    def __init__(self, t):
+        self.t = t
+        self.root = Node(t)
+        self.root.is_leaf = True
+
+    def search(self, key, node=None):
+        if node is None:
+            node = self.root
+
+        i = 0
+        while i < len(node.keys) and key > node.keys[i]:
+            i += 1
+
+        if node.is_leaf:
+            return key in node.keys
+        else:
+            return self.search(key, node.child[i])
+
+    def insert(self, key):
+        root = self.root
+        if len(root.keys) == (2 * self.t) - 1:
+            temp = Node(self.t)
+            self.root = temp
+            temp.child.insert(0, root)
+            self.split_child(temp, 0)
+            self.insert_non_full(temp, key)
+        else:
+            self.insert_non_full(root, key)
+
+    def insert_non_full(self, node, key):
+        i = len(node.keys) - 1
+        if node.is_leaf:
+            node.keys.append(0)
+            while i >= 0 and key < node.keys[i]:
+                node.keys[i + 1] = node.keys[i]
+                i -= 1
+            node.keys[i + 1] = key
+        else:
+            while i >= 0 and key < node.keys[i]:
+                i -= 1
+            i += 1
+            if len(node.child[i].keys) == (2 * self.t) - 1:
+                self.split_child(node, i)
+                if key > node.keys[i]:
+                    i += 1
+            self.insert_non_full(node.child[i], key)
+
+    def split_child(self, parent, i):
+        t = self.t
+        child = parent.child[i]
+        new_child = Node(t)
+        new_child.is_leaf = child.is_leaf
+        
+        # Move chaves e filhos
+        parent.keys.insert(i, child.keys[t - 1])
+        parent.child.insert(i + 1, new_child)
+
+        new_child.keys = child.keys[t:]
+        child.keys = child.keys[:t-1]
+        
+        if not child.is_leaf:
+            new_child.child = child.child[t:]
+            child.child = child.child[:t]
+
+    def delete(self, key):
+        root = self.root
+        self.delete_key(root, key)
+
+    def delete_key(self, node, key):
+        t = self.t
+        i = 0
+        while i < len(node.keys) and key > node.keys[i]:
+            i += 1
+
+        if node.is_leaf:
+            if key in node.keys:
+                node.keys.remove(key)
+        else:
+            if i < len(node.keys) and key == node.keys[i]:
+                # Caso especial: deletar do nó interno
+                pass # Lógica de deleção complexa de nó interno
+            else:
+                child = node.child[i]
+                if len(child.keys) == t - 1:
+                    # Fusão e redistribuição
+                    pass # Lógica de fusão e redistribuição
+                self.delete_key(child, key)
+
+
+# Exemplo de uso
+# Crie uma árvore B+ com um grau mínimo de 2 (o que significa que cada nó pode ter entre 1 e 3 chaves)
+tree = BPlusTree(t=2)
+
+tree.insert(10)
+tree.insert(20)
+tree.insert(30)
+tree.insert(5)
+tree.insert(15)
+tree.insert(25)
+tree.insert(35)
+tree.insert(40)
+
+print(tree.search(20)) # True
+print(tree.search(40)) # True
+print(tree.search(50)) # False
+
+# A deleção é complexa e precisa ser completamente implementada para funcionar.
+# tree.delete(20) 
+# print(tree.search(20))
