@@ -1,0 +1,70 @@
+import timeit
+import matplotlib.pyplot as plt
+import numpy as np
+from numpy.random import randint
+
+# Função para desenhar o gráfico
+def desenhaGrafico(x, y, graphLabel, fileName, xl="Quantidade de elementos", yl="Tempo (s)"):
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111)
+    
+    for i in range(len(y)):
+        ax.plot(x, y[i], label=graphLabel[i])
+    
+    ax.legend(bbox_to_anchor=(1, 1), bbox_transform=plt.gcf().transFigure)
+    plt.ylabel(yl)
+    plt.xlabel(xl)
+    plt.title("Selection Sort: Tempo de Execução vs. Tamanho da Lista")
+    plt.grid(True)
+    fig.savefig(fileName)
+    plt.show()
+
+# Implementação do algoritmo Selection Sort
+def selectionSort(arr):
+    n = len(arr)
+    for i in range(n):
+        # Encontra o índice do menor elemento na parte não ordenada
+        min_idx = i
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        
+        # Troca o menor elemento encontrado com o primeiro elemento da parte não ordenada
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+
+# --- Lógica Principal ---
+if __name__ == "__main__":
+    tamanhos = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+    
+    tempos_melhor_caso = []
+    tempos_medio_caso = []
+    tempos_pior_caso = []
+
+    for tam in tamanhos:
+        print(f"Processando lista de tamanho {tam}...")
+        
+        # Gera uma lista aleatória
+        lista_aleatoria = list(randint(0, tam * 10, tam))
+        
+        # Melhor Caso: lista já ordenada
+        lista_melhor_caso = sorted(lista_aleatoria)
+        tempo = timeit.timeit(lambda: selectionSort(lista_melhor_caso.copy()), number=1)
+        tempos_melhor_caso.append(tempo)
+        
+        # Pior Caso: lista em ordem decrescente
+        lista_pior_caso = sorted(lista_aleatoria, reverse=True)
+        tempo = timeit.timeit(lambda: selectionSort(lista_pior_caso.copy()), number=1)
+        tempos_pior_caso.append(tempo)
+        
+        # Caso Aleatório (Médio)
+        tempo = timeit.timeit(lambda: selectionSort(lista_aleatoria.copy()), number=1)
+        tempos_medio_caso.append(tempo)
+
+    # Prepara os dados para o gráfico
+    casos = [tempos_pior_caso, tempos_medio_caso, tempos_melhor_caso]
+    casos_labels = ['Pior Caso (Invertida)', 'Caso Médio (Aleatória)', 'Melhor Caso (Ordenada)']
+    
+    # Desenha e salva o gráfico
+    desenhaGrafico(tamanhos, casos, casos_labels, 'SelectionSort_Casos.png')
+    
+    print("\nProcesso finalizado. O gráfico foi gerado.")
