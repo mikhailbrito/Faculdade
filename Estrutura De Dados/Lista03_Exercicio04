@@ -1,0 +1,26 @@
+/*
+Considerando a necessidade de desenvolver uma agenda que contenha os campos:
+nome, endereço, telefone e um campo situação (L – Livre; X – Ocupado e * -
+Apagado); defina a estrutura de registro apropriado em C.
+*/
+
+#include <stdio.h>
+
+// Definição da estrutura de registro para a agenda
+struct Agenda {
+    char nome[50];       // Campo para o nome (cadeia de 50 caracteres)
+    char endereco[100];  // Campo para o endereço (cadeia de 100 caracteres)
+    char telefone[15];   // Campo para o telefone (cadeia de 15 caracteres)
+    char situacao;       // Campo para a situação ('L', 'X' ou '*')
+};
+
+int main() {
+    struct Agenda contato1;
+
+    // Para atribuir valores aos campos:
+    // strcpy(contato1.nome, "Joao da Silva");
+    // strcpy(contato1.telefone, "99-98765-4321");
+    // contato1.situacao = 'L';
+    
+    return 0;
+}
