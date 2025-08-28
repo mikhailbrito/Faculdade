@@ -1,0 +1,35 @@
+// "1. Suponha que existam 02 vetores A e B do tipo inteiro com 05 elementos inteiros cada. Elabore um algoritmo que construa um vetor C a partir da junção de A e B."
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    // Declaração dos vetores
+    int vetA[5];
+    int vetB[5];
+    int vetC[5]; // O vetor C agora tem 5 elementos, pois é o resultado da soma
+    int i;
+
+    // Leitura dos elementos do vetor A
+    for (i = 0; i < 5; i++) {
+        printf("Digite o %dº numero do vetor A: ", i + 1);
+        scanf("%d", &vetA[i]);
+    }
+
+    // Leitura dos elementos do vetor B
+    for (i = 0; i < 5; i++) {
+        printf("Digite o %dº numero do vetor B: ", i + 1);
+        scanf("%d", &vetB[i]);
+    }
+
+    // Soma dos elementos dos vetores A e B, armazenando o resultado no vetor C
+    printf("\nSoma dos Vetores A e B (Vetor C):\n");
+    for (i = 0; i < 5; i++) {
+        vetC[i] = vetA[i] + vetB[i];
+        printf("%d ", vetC[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
