@@ -1,0 +1,62 @@
+/*
+1. Suponha que existam 02 vetores A e B do tipo inteiro com 25 elementos inteiros
+cada. Elabore um algoritmo que construa um vetor C a partir da junção de A e B. A
+seguir efetue uma pesquisa sequencial no vetor no vetor C.
+*/
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int A[25], B[25];
+    int C[50];
+    int i, j;
+    int numero_pesquisa;
+    int encontrado = 0;
+
+    // --- Leitura dos vetores A e B ---
+    printf("Digite 25 numeros inteiros para o vetor A:\n");
+    for (i = 0; i < 25; i++) {
+        printf("Elemento A[%d]: ", i);
+        scanf("%d", &A[i]);
+    }
+
+    printf("\nDigite 25 numeros inteiros para o vetor B:\n");
+    for (i = 0; i < 25; i++) {
+        printf("Elemento B[%d]: ", i);
+        scanf("%d", &B[i]);
+    }
+
+    // --- Junção dos vetores A e B no vetor C ---
+    // Copia os elementos de A para o inicio de C
+    for (i = 0; i < 25; i++) {
+        C[i] = A[i];
+    }
+    // Copia os elementos de B para o final de C
+    for (i = 0; i < 25; i++) {
+        C[i + 25] = B[i];
+    }
+
+    printf("\nVetor C (juncao de A e B):\n");
+    for (i = 0; i < 50; i++) {
+        printf("%d ", C[i]);
+    }
+    printf("\n");
+
+    // --- Pesquisa Sequencial no vetor C ---
+    printf("\nDigite um numero para pesquisar no vetor C: ");
+    scanf("%d", &numero_pesquisa);
+
+    for (i = 0; i < 50; i++) {
+        if (C[i] == numero_pesquisa) {
+            printf("O numero %d foi encontrado na posicao %d do vetor C.\n", numero_pesquisa, i);
+            encontrado = 1;
+            break; // Encerra o loop assim que encontrar o numero
+        }
+    }
+
+    if (!encontrado) {
+        printf("O numero %d nao foi encontrado no vetor C.\n", numero_pesquisa);
+    }
+
+    return 0;
+}
