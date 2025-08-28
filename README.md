@@ -1,2 +1,2 @@
 # Faculdade
-Projetos feitos na faculdade.
+Alguns projetos e códigos feitos na faculdade.
