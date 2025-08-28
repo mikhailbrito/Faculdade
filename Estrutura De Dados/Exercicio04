@@ -1,0 +1,72 @@
+/*
+4. Ler duas matrizes A e B, de duas dimensões, sendo a matriz A de 5X4 (5 linhas e 4
+colunas) e a matriz B de 4X3 (quatro linhas e três colunas). Apresentar a matriz C
+como resultado da multiplicação das matrizes A e B. Condição para multiplicação:
+o número de colunas de A tem que ser igual ao número de linhas de B.
+*/
+
+#include <stdio.h>
+
+int main() {
+    int matA[5][4];
+    int matB[4][3];
+    int matC[5][3]; // Matriz C deve ter dimensão 5x3
+    int i, j, k;
+
+    // --- Leitura e impressão da Matriz A ---
+    printf("\n--- Elementos da matriz A (5x4) ---\n\n");
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 4; j++) {
+            printf("Elemento A[%d][%d] = ", i, j);
+            scanf("%d", &matA[i][j]);
+        }
+    }
+
+    printf("\nValores da matriz A:\n");
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 4; j++) {
+            printf("%d\t", matA[i][j]);
+        }
+        printf("\n");
+    }
+
+    // --- Leitura e impressão da Matriz B ---
+    printf("\n--- Elementos da matriz B (4x3) ---\n\n");
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 3; j++) {
+            printf("Elemento B[%d][%d] = ", i, j);
+            scanf("%d", &matB[i][j]);
+        }
+    }
+
+    printf("\nValores da matriz B:\n");
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 3; j++) {
+            printf("%d\t", matB[i][j]);
+        }
+        printf("\n");
+    }
+
+    // --- Multiplicação das Matrizes A e B ---
+    // A condição (4 colunas de A == 4 linhas de B) é satisfeita
+    printf("\n--- Resultado da multiplicacao (Matriz C) ---\n");
+
+    for (i = 0; i < 5; i++) { // Percorre as linhas de A
+        for (j = 0; j < 3; j++) { // Percorre as colunas de B
+            matC[i][j] = 0; // Inicializa o elemento de C com 0
+            for (k = 0; k < 4; k++) { // Laço para a soma dos produtos
+                matC[i][j] += matA[i][k] * matB[k][j];
+            }
+        }
+    }
+
+    // --- Impressão da Matriz C ---
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            printf("%d\t", matC[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
