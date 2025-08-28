@@ -1,0 +1,43 @@
+/*
+2. Elabore um registro que contenha os seguintes campos: nome e nota. O campo nota
+deverá ser um vetor com 03 notas para registrar as notas AP1, AP2 e FINAL.
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Definição do registro (struct)
+struct Aluno {
+    char nome[50]; // Campo para o nome do aluno (cadeia de 50 caracteres)
+    float notas[3]; // Campo para as 3 notas (vetor float)
+};
+
+int main() {
+    struct Aluno aluno1; // Cria uma variável do tipo Aluno
+
+    // --- Leitura dos dados ---
+    printf("Digite o nome do aluno: ");
+    // Lê o nome completo, incluindo espaços
+    fgets(aluno1.nome, sizeof(aluno1.nome), stdin);
+    // Remove o caractere de nova linha que fgets adiciona
+    aluno1.nome[strcspn(aluno1.nome, "\n")] = 0;
+
+    printf("Digite a nota da AP1: ");
+    scanf("%f", &aluno1.notas[0]);
+
+    printf("Digite a nota da AP2: ");
+    scanf("%f", &aluno1.notas[1]);
+
+    printf("Digite a nota FINAL: ");
+    scanf("%f", &aluno1.notas[2]);
+
+    // --- Exibição dos dados ---
+    printf("\n--- Dados do Aluno ---\n");
+    printf("Nome: %s\n", aluno1.nome);
+    printf("Nota AP1: %.2f\n", aluno1.notas[0]);
+    printf("Nota AP2: %.2f\n", aluno1.notas[1]);
+    printf("Nota FINAL: %.2f\n", aluno1.notas[2]);
+
+    return 0;
+}
