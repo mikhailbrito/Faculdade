@@ -1,0 +1,97 @@
+/*
+Elabore um algoritmo que armazene 30 valores inteiros em um vetor. 
+Em seguida, leia o valor para o índice 0 do vetor e, com base na paridade (se é par ou ímpar) desse valor, 
+aplique a seguinte lei de formação a todo o vetor: se o valor do índice 0 for par, multiplique todos os 30 valores do vetor por 2; 
+caso contrário, multiplique todos por 5. Por fim, efetue uma pesquisa binária no vetor.
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Função para ordenar o vetor usando Bubble Sort (necessária para a pesquisa binária)
+void bubbleSort(int arr[], int n) {
+    int i, j, temp;
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Função de pesquisa binária
+int binarySearch(int arr[], int inicio, int fim, int valor) {
+    while (inicio <= fim) {
+        int meio = inicio + (fim - inicio) / 2;
+        if (arr[meio] == valor) {
+            return meio; // Retorna o índice onde o valor foi encontrado
+        }
+        if (arr[meio] < valor) {
+            inicio = meio + 1;
+        } else {
+            fim = meio - 1;
+        }
+    }
+    return -1; // Retorna -1 se o valor não for encontrado
+}
+
+int main() {
+    int vetor[30];
+    int i;
+    int valor_pesquisa;
+
+    // 1. Ler os 30 valores para o vetor
+    printf("Digite 30 numeros inteiros:\n");
+    for (i = 0; i < 30; i++) {
+        printf("Digite o numero para a posicao %d: ", i);
+        scanf("%d", &vetor[i]);
+    }
+    
+    // 2. Aplicar a lei de formação com base no valor do indice 0
+    printf("\nValor no indice 0 e %d.\n", vetor[0]);
+
+    if (vetor[0] % 2 == 0) {
+        printf("O valor do indice 0 e par. Multiplicando todos os valores do vetor por 2.\n");
+        for (i = 0; i < 30; i++) {
+            vetor[i] *= 2;
+        }
+    } else {
+        printf("O valor do indice 0 e impar. Multiplicando todos os valores do vetor por 5.\n");
+        for (i = 0; i < 30; i++) {
+            vetor[i] *= 5;
+        }
+    }
+
+    // Exibir o vetor após a transformação
+    printf("\nVetor apos a lei de formacao:\n");
+    for (i = 0; i < 30; i++) {
+        printf("%d ", vetor[i]);
+    }
+    printf("\n");
+
+    // 3. Ordenar o vetor para a pesquisa binária
+    bubbleSort(vetor, 30);
+    
+    printf("\nVetor ordenado para a pesquisa:\n");
+    for (i = 0; i < 30; i++) {
+        printf("%d ", vetor[i]);
+    }
+    printf("\n");
+
+    // 4. Pesquisa Binária
+    printf("\nDigite um numero para pesquisar no vetor: ");
+    scanf("%d", &valor_pesquisa);
+
+    int resultado = binarySearch(vetor, 0, 29, valor_pesquisa);
+
+    if (resultado != -1) {
+        printf("O numero %d foi encontrado na posicao %d do vetor.\n", valor_pesquisa, resultado);
+    } else {
+        printf("O numero %d nao foi encontrado no vetor.\n", valor_pesquisa);
+    }
+
+    return 0;
+}
