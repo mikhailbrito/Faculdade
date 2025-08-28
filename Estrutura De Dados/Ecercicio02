@@ -1,0 +1,82 @@
+/*
+2. Considere duas matrizes A e B com dimensões 5X3. Elabore um algoritmo que
+construa uma matriz C de dimensão 2X15, de modo que a primeira linha de C seja
+preenchida com os elementos de A e a segunda linha de C seja preenchida com os
+elementos de B.
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    int matA[5][3], matB[5][3], matC[2][15];
+    int i, j;
+
+    // --- Matriz A ---
+    printf("\nElementos da matriz A (5x3)\n\n");
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            printf("Elemento [%d][%d] = ", i, j);
+            scanf("%d", &matA[i][j]);
+        }
+    }
+
+    printf("\nValores da matriz A:\n");
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            printf("%d\t", matA[i][j]);
+        }
+        printf("\n");
+    }
+
+    // --- Matriz B ---
+    printf("\nElementos da matriz B (5x3)\n\n");
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            printf("Elemento [%d][%d] = ", i, j);
+            scanf("%d", &matB[i][j]);
+        }
+    }
+
+    printf("\nValores da matriz B:\n");
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            printf("%d\t", matB[i][j]);
+        }
+        printf("\n");
+    }
+
+    // --- Construção da Matriz C (2x15) ---
+    // A matriz C terá 30 elementos no total, assim como A (15) e B (15) juntos.
+    int k = 0; // Índice auxiliar para as colunas de C
+    
+    // Preenche a primeira linha de C com os elementos de A
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            matC[0][k] = matA[i][j];
+            k++;
+        }
+    }
+
+    k = 0; // Reinicia o índice auxiliar
+    
+    // Preenche a segunda linha de C com os elementos de B
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 3; j++) {
+            matC[1][k] = matB[i][j];
+            k++;
+        }
+    }
+
+    // --- Imprimindo a Matriz C ---
+    printf("\nValores da Matriz C (juncao de A e B):\n");
+    for (i = 0; i < 2; i++) {
+        for (j = 0; j < 15; j++) {
+            printf("%d\t", matC[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
