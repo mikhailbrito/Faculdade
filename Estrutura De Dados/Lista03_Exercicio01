@@ -1,0 +1,93 @@
+/*
+1. A seção de controle de produção de uma fábrica mantém um arquivo de registros de
+produção por funcionários. Cada registro contém o nome do funcionário (como uma
+cadeia de 35 caracteres), o sexo do funcionário (M- masculino ou F- feminino) e o
+número de peças produzidas pelo funcionário.
+Escrever um programa que calcule e escreva:
+
+A quantidade de peças produzidas pelos funcionários do sexo masculino e
+feminino;
+O nome do(a) funcionário(a) com a maior produção registrada (obs. não
+haverá empates).
+
+Ex ao codar: 
+2 (registra 2 funcionários)
+Lucas ( nome do funcionário 1)
+M (sexo do func. 1)
+100 (peças produzidas pelo func. 1)
+Maria (nome do func. 2)
+F (sexo do func. 2)
+95 (peças produzidas pelo func. 2)
+ (Adicionar uma linha em branco no final da entrada para que o programa receba a entrada completa e possa encerrar o loop.)
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Definição da estrutura para o registro de um funcionário
+struct Funcionario {
+    char nome[36]; // 35 caracteres para o nome + 1 para o terminador '\0'
+    char sexo;     // 'M' ou 'F'
+    int pecas;
+};
+
+int main() {
+    int num_registros;
+    int i;
+    int total_masculino = 0;
+    int total_feminino = 0;
+    char nome_maior_producao[36];
+    int maior_producao = -1; // Inicializa com um valor que será menor que qualquer produção válida
+
+    // Solicita a quantidade de registros
+    printf("Digite o numero de funcionarios a serem registrados: ");
+    scanf("%d", &num_registros);
+    
+    // Limpa o buffer do teclado para a proxima leitura de string
+    while(getchar() != '\n'); 
+
+    // Cria um array de estruturas para armazenar os funcionarios
+    struct Funcionario funcionarios[num_registros];
+
+    // --- Leitura dos dados e processamento ---
+    for (i = 0; i < num_registros; i++) {
+        printf("\n--- Registro do funcionario %d ---\n", i + 1);
+
+        // Leitura do nome
+        printf("Digite o nome (max. 35 caracteres): ");
+        fgets(funcionarios[i].nome, sizeof(funcionarios[i].nome), stdin);
+        funcionarios[i].nome[strcspn(funcionarios[i].nome, "\n")] = 0; // Remove o '\n'
+
+        // Leitura do sexo
+        printf("Digite o sexo (M/F): ");
+        scanf(" %c", &funcionarios[i].sexo);
+        
+        // Leitura do numero de pecas produzidas
+        printf("Digite o numero de pecas produzidas: ");
+        scanf("%d", &funcionarios[i].pecas);
+        
+        // Limpa o buffer do teclado para o proximo loop
+        while(getchar() != '\n'); 
+
+        // Calcula o total de pecas por sexo
+        if (funcionarios[i].sexo == 'M' || funcionarios[i].sexo == 'm') {
+            total_masculino += funcionarios[i].pecas;
+        } else if (funcionarios[i].sexo == 'F' || funcionarios[i].sexo == 'f') {
+            total_feminino += funcionarios[i].pecas;
+        }
+
+        // Verifica o(a) funcionario(a) com a maior producao
+        if (funcionarios[i].pecas > maior_producao) {
+            maior_producao = funcionarios[i].pecas;
+            strcpy(nome_maior_producao, funcionarios[i].nome);
+        }
+    }
+
+    // --- Impressão dos resultados ---
+    printf("\n\n--- RELATORIO DE PRODUCAO ---\n");
+    printf("Total de pecas produzidas por funcionarios do sexo masculino: %d\n", total_masculino);
+    printf("Total de pecas produzidas por funcionarios do sexo feminino: %d\n", total_feminino);
+    printf("Funcionario(a) com a maior producao: %s (com %d pecas)\n", nome_maior_producao, maior_producao);
+
+    return 0;
+}
