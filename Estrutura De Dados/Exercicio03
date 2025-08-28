@@ -1,0 +1,24 @@
+/*
+3. Escreva um programa que, leia um determinado número N e informe os dois
+antecessores de N e os dois sucessores de N.
+*/
+
+#include <stdio.h>
+#include <stdlib.h> // Incluído para compatibilidade, embora não seja estritamente necessário
+
+int main()
+{
+    int n;
+
+    printf("\n--- ANTECESSORES E SUCESSORES ---\n");
+
+    // O programa deve primeiro ler o numero do usuario
+    printf("\nDigite um numero inteiro (N): ");
+    scanf("%d", &n);
+
+    // Agora, o programa pode informar os antecessores e sucessores de N
+    printf("\nOs antecessores de %d sao: %d e %d", n, n - 1, n - 2);
+    printf("\nOs sucessores de %d sao: %d e %d\n\n", n, n + 1, n + 2);
+
+    return 0;
+}
